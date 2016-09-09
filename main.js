@@ -9,8 +9,8 @@ var heightText = document.getElementById('height');
 var codeTemplate = '<script charset="utf-8" src="https://floors-widget.api.2gis.ru/loader.js" id="dg-floors-widget-loader"></script>\n' +
 '<script charset="utf-8">\n' +
 '    DG.FloorsWidget.init({\n' +
-'        width: \'%width%px\',\n' +
-'        height: \'%height%px\',\n' +
+'        width: \'%width%\',\n' +
+'        height: \'%height%\',\n' +
 '        initData: {complexId: \'%id%\'}\n' +
 '    });\n' +
 '</script>';
@@ -86,9 +86,20 @@ mallSelect.onchange = function() {
     removeFrame();
 };
 
-function validateText() {
-    widthText.value = Math.max(760, widthText.value);
-    heightText.value = Math.max(400, heightText.value);
+function getSize() {
+    var width = widthText.value;
+    if (Number(width)) {
+        widthText.value = Math.max(760, width);
+        width += 'px';
+    }
+
+    var height = heightText.value;
+    if (Number(height)) {
+        heightText.value = Math.max(400, height);
+        height += 'px';
+    }
+
+    return [width, height];
 }
 
 createButton.onclick = function() {
@@ -98,16 +109,16 @@ createButton.onclick = function() {
 
     removeFrame();
 
-    validateText();
+    var size = getSize();
 
     frame = document.createElement('iframe');
-    frame.width = widthText.value;
-    frame.height = heightText.value;
+    frame.width = size[0];
+    frame.height = size[1];
     frame.src = 'https://floors-widget.api.2gis.ru/?complexId=' + id;
     document.body.appendChild(frame);
 
     codeArea.value = codeTemplate
-        .replace('%width%', widthText.value)
-        .replace('%height%', heightText.value)
+        .replace('%width%', size[0])
+        .replace('%height%', size[1])
         .replace('%id%', id);
 };
