@@ -52,7 +52,7 @@ var dataFromStorage = localStorage.getItem('regions');
 if (dataFromStorage) {
     updateRegions(JSON.parse(dataFromStorage));
 } else {
-    fetch('http://catalog.api.2gis.ru/2.0/region/list?key=ruregt3044')
+    fetch('https://catalog.api.2gis.ru/2.0/region/list?key=ruregt3044')
         .then(function(res) {
             return res.json();
         })
@@ -64,7 +64,7 @@ regionSelect.onchange = function() {
     empty(mallSelect);
     codeArea.value = '';
 
-    fetch('http://floors.api.2gis.ru/complexes?region_id=' + regionSelect.value)
+    fetch('https://floors.api.2gis.ru/complexes?region_id=' + regionSelect.value)
         .then(function(res) {
             return res.json();
         })
