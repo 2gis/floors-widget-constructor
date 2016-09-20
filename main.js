@@ -28,6 +28,16 @@ function empty(node) {
     }
 }
 
+function sortByName(a, b) {
+    if (a.name > b.name) {
+        return 1;
+    }
+    if (a.name < b.name) {
+        return -1;
+    }
+    return 0;
+}
+
 function removeFrame() {
     if (frame) {
         document.body.removeChild(frame);
@@ -37,6 +47,7 @@ function removeFrame() {
 function updateRegions(data) {
     addBlankOption(regionSelect);
 
+    data.result.items.sort(sortByName);
     data.result.items.forEach(function(region) {
         var option = document.createElement('option');
         option.value = region.id;
@@ -71,6 +82,7 @@ regionSelect.onchange = function() {
         .then(function(data) {
             addBlankOption(mallSelect);
 
+            data.sort(sortByName);
             data.forEach(function(mall) {
                 list[mall.id] = mall;
                 var option = document.createElement('option');
