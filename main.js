@@ -125,15 +125,20 @@ createButton.onclick = function() {
 
     var initData = {
         complexId: id,
-        options: {}
     };
 
+    var options = {};
+
     if (localeSelect.value !== 'ru_RU') {
-        initData.options.locale = localeSelect.value;
+        options.locale = localeSelect.value;
     }
 
     if (queryText.value !== '') {
-        initData.options.initialSearchQuery = queryText.value;
+        options.initialSearchQuery = queryText.value;
+    }
+
+    if (Object.keys(options).length) {
+        initData.options = options;
     }
 
     var size = getSize();
