@@ -1,17 +1,19 @@
 var frame;
 var regionSelect = document.getElementById('region');
 var mallSelect = document.getElementById('mall');
+var localeSelect = document.getElementById('locale');
 var codeArea = document.getElementById('code');
 var createButton = document.getElementById('create');
 var widthText = document.getElementById('width');
 var heightText = document.getElementById('height');
+var queryText = document.getElementById('query');
 
 var codeTemplate = '<script charset="utf-8" src="https://floors-widget.api.2gis.ru/loader.js" id="dg-floors-widget-loader"></script>\n' +
 '<script charset="utf-8">\n' +
 '    DG.FloorsWidget.init({\n' +
 '        width: \'%width%\',\n' +
 '        height: \'%height%\',\n' +
-'        initData: {complexId: \'%id%\'}\n' +
+'        initData: %initData%\n' +
 '    });\n' +
 '</script>';
 
@@ -121,16 +123,32 @@ createButton.onclick = function() {
 
     removeFrame();
 
+    var initData = {
+        complexId: id,
+        options: {}
+    };
+
+    if (localeSelect.value !== 'ru_RU') {
+        initData.options.locale = localeSelect.value;
+    }
+
+    if (queryText.value !== '') {
+        initData.options.initialSearchQuery = queryText.value;
+    }
+
     var size = getSize();
 
     frame = document.createElement('iframe');
     frame.width = size[0];
     frame.height = size[1];
-    frame.src = 'https://floors-widget.api.2gis.ru/?complexId=' + id;
+    frame.src = './widget.html?' + encodeURIComponent(JSON.stringify(initData));
     document.body.appendChild(frame);
+    frame.onload = function() {
+        frame.contentWindow.postMessage({initData}, '*');
+    };
 
     codeArea.value = codeTemplate
         .replace('%width%', size[0])
         .replace('%height%', size[1])
-        .replace('%id%', id);
+        .replace('%initData%', JSON.stringify(initData, null, 4).replace(/\n/g, '\n        '));
 };
